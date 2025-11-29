@@ -1,1 +1,521 @@
 \chapter{THIẾT KẾ CƠ KHÍ}
+\section{Yêu cầu thiết kế cơ khí}
+\begin{itemize}
+    \item Bão dàm lực kéo lớn nhất $F_{max} = 15~kN$.
+    \item Hành trình thủy: $S = 1000~\text{mm}$.
+    \item Sơ đồ cơ cấu cơ khí tổng thể được trình bày trên hình dưới đây.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{pictures/chapter3/c3_p01_sodonguyenly.png}
+    \caption{Sơ đồ nguyên lý}
+    \label{fig:label}
+\end{figure}
+Các bộ phận chính trên sơ đồ cơ khí:
+\begin{enumerate}
+    \item Động cơ.
+    \item Hộp giảm tốc trục vít.
+    \item Mô hình người $(100~\text{kg})$.
+    \item Dây đai an toàn.
+    \item Cảm biến lực (loadcell).
+    \item Tời kéo.
+\end{enumerate}
+
+\section{Tính toán thiết kế}
+\subsection{Tính toán lựa chọn tời kéo}
+
+\textbf{Lựa chọn tời kéo:}
+
+Theo thông tin từ các nhà sản xuất tời điện như Emcé Winches và Thern Winches, lực kéo danh nghĩa tối thiểu của tời chọn phải lớn hơn $1,3 \div 1,5$ lần tải trọng cần kéo để bảo đảm an toàn và hiệu quả làm việc.
+
+Với yêu cầu lực kéo của cáp tương đương tải trọng 1500 kg, cần chọn tời có sức kéo trong khoảng $1950 \div 2250$ kg.
+
+Để phù hợp với các cấp tải chuẩn dạng có trên thị trường, chọn tời có sức kéo danh nghĩa 2000 kg (2 tấn).
+
+Khả năng tải của tời thay đổi theo số lớp cáp quấn trên tang. Khi cáp gần như được tháo hết và chỉ còn một lớp trên tang tới thì tời đạt khả năng tải lớn nhất, gọi là \textit{tải lớp thứ nhất}. Khi số lớp cáp quấn tăng dần cho đến khi đầy tang, khả năng tải giảm xuống, gọi là \textit{tải khi quấn đầy}. Do đó, đối với máy thử, chỉ cần quấn một lớp cáp là đã đủ cho hành trình thử và đồng thời bảo đảm khả năng tải của tời.
+
+\textbf{Lựa chọn hộp giảm tốc:}
+
+Với yêu cầu kéo của tời nêu trong phần thông số thiết kế, hộp giảm tốc trục vít là lựa chọn tối ưu vì:
+
+\begin{itemize}
+    \item Có khả năng tự hãm tốt, phù hợp với bài toán kéo thẳng đứng, cho phép giữ tải mà không cần hệ thống phanh bổ sung.
+    \item Tạo mômen xoắn lớn, không cần chọn động cơ công suất quá lớn, giúp tiết kiệm chi phí và không gian bố trí trên thân máy phía trên.
+\end{itemize}
+
+\textbf{Lựa chọn hệ tời kéo:}
+
+Lực kéo yêu cầu: $F = 15000$ N.
+
+Để thuận tiện cho việc tính toán, trước tiên lựa chọn sơ bộ một bộ tời nhằm xác định đường kính tang phục vụ tính công suất. Như đã phân tích ở trên, chọn một tời điện có sức kéo tối thiểu 2 tấn, sử dụng hộp giảm tốc trục vít.
+
+Do đó, lựa chọn sơ bộ tời thuộc series 3WG4 Atlas II -- Worm Gear của hãng Thern Winches, với đường kính tang $D = 102$ mm.
+
+Bán kính tang: $r = 51$ mm $= 0.051$ m.
+
+Mômen xoắn trên trục tang:
+\begin{equation}
+    T = F \times r = 20000 \times 0.051 = 1020~N.m = 1020~000~N.mm.
+\end{equation}
+
+Với hành trình thử $S = 1000$ mm (1 m) trong thời gian $t = 240$ s, vận tốc nâng là:
+\begin{equation}
+    V = \frac{S}{t} = \frac{1}{240} = 0.0042~m/s.
+\end{equation}
+
+Chu vi tang:
+\begin{equation}
+    C = \pi \times D = \pi \times 102 \approx 320.44~mm \approx 0.3204~m.
+\end{equation}
+
+Tốc độ quay của tang tời:
+\begin{equation}
+    n = \frac{v}{C} \times 60 = \frac{0.0042}{0.3204} \times 6 \approx 0.8~\text{vòng/phút}~(RPM).
+\end{equation}
+
+Công suất cần thiết để kéo tải:
+\begin{equation}
+    P_{ct} = \frac{T \times n}{9.55 \times 10^6} \approx 0.1~kW.
+\end{equation}
+
+Như vậy, để đáp ứng yêu cầu thiết kế, hệ thống phải thỏa mãn:
+\begin{equation}
+    P_{winch} \geq P_{ct}
+\end{equation}
+
+\begin{equation}
+    V_{winch} \geq V
+\end{equation}
+
+Dựa vào các tiêu chí trên, tời 3WG4 Atlas II Worm Gear được lựa chọn vì đáp ứng yêu cầu thiết kế.
+
+\begin{table}[H]
+    \centering
+    \caption{Thông số kỹ thuật tời kéo}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Thông số} & \textbf{Đơn vị} & \textbf{Giá trị} \\
+        \hline
+        Mã nhà sản xuất & & 3WG4-B4600-9S6 \\
+        \hline
+        Công suất động cơ & kW & 1,4 \\
+        \hline
+        Thời gian làm việc định mức & phút & 15 \\
+        \hline
+        Tải trọng lớp cáp thứ nhất & kg & 2086 \\
+        \hline
+        Tốc độ tang lớp cáp thứ nhất & vòng/phút & 8,6 \\
+        \hline
+        Điện áp nguồn & V, pha & 220 V, 3 pha \\
+        \hline
+        Dung lượng tang lớp cáp thứ nhất & m & 5,4 \\
+        \hline
+        Đường kính tang & mm & 102 \\
+        \hline
+        Khối lượng tời & kg & 111 \\
+        \hline
+        Tốc độ quay động cơ & vòng/phút & 1725 \\
+        \hline
+        Tỷ số truyền hộp giảm tốc trục vít cấp 1 & & 7,5:1 \\
+        \hline
+        Tỷ số truyền hộp giảm tốc trục vít cấp 2 & & 20:1 \\
+        \hline
+    \end{tabular}
+    \label{tab:winch_specs}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{pictures/chapter3/c3_p02.png}
+    \caption{Tời kéo dòng 3WG4}
+    \label{fig:winch_3wg4}
+\end{figure}
+
+\subsection{Tính toán lựa chọn cốt và bạc trượt dẫn hướng}
+
+Để dẫn hướng dầm ngang khi tác dụng lực kéo, cần bố sung các cốt dẫn hướng và cụm bạc trượt. Hãi dạng dẫn hướng phổ biến là ray dẫn hướng tiết diện chữ nhật và trục tròn. Đối với trục tròn còn có biến thể trục spline với các rãnh bi trên trục, kết hợp bạc bi trượt, giúp giảm ma sát khi chuyển động.
+
+Dạng ray chữ nhật có ưu cùng ưỡn độc trực tốt hơn dạng trục tròn (bao gồm cả trục spline). Tuy nhiên, ray chữ nhật có chi phí, tính phổ biến và dễ chế tạo lắp ráp, phương án sử dụng trục tròn trơn kết hợp bạc trượt bi tuyến tính được chọn làm cốt dẫn hướng và cụm đỡ.
+
+Hệ thống sử dụng 4 bạc trượt tuyến tính dạng LMK lắp trên 2 trục dẫn hướng, loadcell được đặt giữa hai trục. Cấu trúc này bảo đảm khả năng dẫn hướng chính xác trong quá trình làm việc của thiết bị. Lực kéo chính tử hệ tời khổng tác dụng trực tiếp lên bạc trượt mà truyền qua thanh biên kết vă loadcell. Các bạc đỡ cốt chỉ yêu cầu tải trong đó trong hường cụm dẫn hướng, bao gồm trọng lượng hai trục dẫn hướng, cụm kết câu liên kết với loadcell và các chi tiết khác gắn trên cụm dẫn hướng.
+
+Do sử dụng 4 bạc trượt nên tải trọng được chia đều cho từng bạc.
+
+Xác định tải trọng tác dụng lên mỗi bạc trượt tuyến tính:
+
+Theo thiết kế, tổng trọng lượng cụm dẫn hướng xấp xỉ 50 kg (tương đương khoảng 490 N). Mỗi trục dẫn hướng chịu 25 kg ($\approx$ 245 N). Mỗi trục có 2 bạc trượt nên tải trên mỗi bạc:
+
+\begin{equation}
+    F_{bạc} \approx 245~N.
+\end{equation}
+
+Xét hệ số an toàn $n = 2$ (do có thể xảy ra rung động lớn khi dây đai bị đứt trong quá trình kéo), mỗi bạc trượt cần chịu được tải trọng cực đại xấp xỉ 245 N (dã kể đến hệ số an toàn bạc).
+
+Phân tích và tính toán tải trọng tác dụng lên trục dẫn hướng:
+
+Trong trạng thái làm việc, trục dẫn hướng bố trí theo phương thẳng đứng, tải trọng chính tác dụng lên trục là lực nén đọc trục. Ngoài ra còn có thành phần uốn do trọng lượng các chi tiết gắn trên trục. Khi thiết kế, cần kiểm tra động thời đều kiện bền nén và độ cứng (độ võng) của trục.
+
+Độ võng ngang lớn nhất của một trục dặt thẳng đứng, ngàm chặt hai đầu, chịu tải tập trung ở giữa:
+
+\begin{equation}
+    \delta = \frac{FL^3}{192EI}
+\end{equation}
+
+Trong đó:
+
+\begin{itemize}
+    \item $\delta = 1$ mm là độ võng ngang cho phép tại giữa trục;
+    \item $F = 245 \times 2 = 490$ N là lực tác dụng lên mỗi trục (N);
+    \item $L = 2$ m là chiều dài trục;
+    \item $E = 2,1 \times 10^{11}~N/m^2$ là môđun đàn hồi đọc (Young) của vật liệu thép;
+    \item I là mômen quán tính tiết diện $(mm^4)$.
+\end{itemize}
+
+Với trục tròn đặc, mômen quán tính tiết diện:
+
+\begin{equation}
+    I = \frac{\pi d^4}{64}
+\end{equation}
+
+Suy ra đường kính cần thiết của trục:
+
+\begin{equation}
+    d \geq \sqrt[4]{\frac{64I}{\pi}} = \sqrt[4]{64 \times \frac{7}{72000000\pi}} \approx 0.0375~mm \approx 37,5~mm.
+\end{equation}
+
+Kết quả cho thấy đường kính tối thiểu của trục vào khoảng 37,5 mm để bảo đảm độ võng của trục không vượt quá 1 mm. Để tăng độ cứng và bảo đảm an toàn khi vận hành, chọn trục có đường kính tiêu chuẩn $d = 40$ mm.
+
+Theo các kích thước tiêu chuẩn, chọn trục tròn đặc đường kính 40 mm, chiều dài 2000 mm. Bạc trượt sử dụng loại LMK40UU của hãng THK (thông số chi tiết xem Bảng 5).
+
+\begin{table}[H]
+    \centering
+    \caption{Thông số kỹ thuật bạc trượt LMK40UU}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Thông số} & \textbf{Đơn vị} & \textbf{Giá trị} \\
+        \hline
+        Mã sản phẩm & & LMK40UU \\
+        \hline
+        Tải trọng động cho phép & N & 2160 \\
+        \hline
+        Tải trọng tĩnh cho phép $C_0$ & N & 4020 \\
+        \hline
+        Khối lượng & g & 864 \\
+        \hline
+        Đường kính trục (Dr) & mm & 40 \\
+        \hline
+        Dung sai Dr & mm & $0/-0,012$ \\
+        \hline
+        Đường kính ngoài (D) & mm & 37 \\
+        \hline
+        Dung sai D & mm & $0/-0,019$ \\
+        \hline
+        Chiều dài bạc (L) & mm & 80 \\
+        \hline
+        Dung sai L & $\mu$m & $0/-300$ \\
+        \hline
+        Kích thước mặt bích (Df) & mm & 96 \\
+        \hline
+        Khoảng cách lỗ bu lông (K) & mm & 75 \\
+        \hline
+        Chiều dày mặt bích (T) & mm & 13 \\
+        \hline
+        Đường kính vòng lỗ bu lông (Dp) & mm & 78 \\
+        \hline
+        Kích thước X & mm & 9 \\
+        \hline
+        Kích thước Y & mm & 14 \\
+        \hline
+        Kích thước Z & mm & 8,6 \\
+        \hline
+        Độ lệch tâm cho phép & $\mu$m & 20 \\
+        \hline
+        Độ vuông góc cho phép & $\mu$m & 20 \\
+        \hline
+    \end{tabular}
+    \label{tab:lmk40uu_specs}
+\end{table}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{pictures/chapter3/c3_p03.png}
+    \caption{LMK40UU}
+    \label{fig:lmk40uu}
+\end{figure}
+
+\subsection{Tính toán bu lông lắp loadcell}
+
+Trong kết cấu, loadcell được lắp bằng một bu lông chịu kéo. Bu lông được siết chặt và làm việc trong điều kiện lực đọc trục biến thiên, có khe hở. Để đơn giản, có thể coi bu lông chịu lực kéo đọc trục không đổi bằng lực kéo cực đại $F_b$ có kể đến hệ số an toàn.
+
+Theo mục 17.5.4 (tr. 585) của [1], lực siết ban đầu (lực tiền siết) của bu lông được xác định:
+
+\begin{equation}
+    V = \frac{k \cdot F}{i \cdot f} \approx 10 F
+\end{equation}
+
+Trong đó:
+
+\begin{itemize}
+    \item $V$ -- lực tiền siết của bu lông (N);
+    \item $k$ -- hệ số an toàn, thường chọn $1,3 \div 1,5$;
+    \item $F$ -- lực đọc trục tác dụng lên bu lông (N);
+    \item $i$ -- số bề mặt tiếp xúc giữa các tấm ghép;
+    \item $f$ -- hệ số ma sát $(0,15 \div 0,2$ đối với bề mặt thép và gang).
+\end{itemize}
+
+Tuy nhiên, trong kết cấu này bu lông chỉ có nhiệm vụ chịu lực kéo, không dùng để ghép chặt nhiều tấm, nên có thể bỏ qua lực tiền siết V.
+
+Tổng lực tác dụng lên bu lông sau khi chịu tải:
+
+\begin{equation}
+    F_{\Sigma} = V + \chi F
+\end{equation}
+
+Trong đó:
+
+\begin{itemize}
+    \item $F_{\Sigma}$ -- tổng lực tác dụng lên bu lông sau khi có tải đọc trục (N);
+    \item $V$ -- lực tiền siết bu lông (N);
+    \item $\chi$ -- hệ số phân bổ ngoại lực $(0,2 \div 0,3$ với tấm thép/gang và bu lông thép);
+    \item $F$ -- lực đọc trục tác dụng lên tấm (N).
+\end{itemize}
+
+Vì lực kéo tác dụng trực tiếp lên bu lông nên tổng lực bằng đúng lực kéo cực đại:
+
+\begin{equation}
+    F_g = F_b = 20000~N.
+\end{equation}
+
+Ứng suất kéo trong thân bu lông:
+
+\begin{equation}
+    \sigma_k = \frac{4 F_{\Sigma}}{\pi d_1^2} \leq [\sigma_k]
+\end{equation}
+
+Trong đó:
+
+\begin{itemize}
+    \item $\sigma_k$ -- ứng suất kéo trong thân bu lông (MPa);
+    \item $d_1$ -- đường kính chân ren (mm);
+    \item $[\sigma_k]$ -- ứng suất kéo cho phép của vật liệu (MPa).
+\end{itemize}
+
+Suy ra đường kính chân ren cần thiết:
+
+\begin{equation}
+    d_1 \geq \sqrt{\frac{4F_{\Sigma}}{\pi [\sigma_k]}}
+\end{equation}
+
+Với lực đọc trục cực đại bằng lực kéo $F_b = 20000~N$, sử dụng bu lông và tấm ghép bằng thép, chọn vật liệu bu lông cấp bền 8.8 (bu lông đen). Ứng suất chảy của vật liệu:
+
+\begin{equation}
+    \sigma_{ch} = 640~MPa.
+\end{equation}
+
+Theo công thức (3.26) [1], ứng suất kéo cho phép:
+
+\begin{equation}
+    [\sigma_k] = \frac{\sigma_{ch}}{[s]}
+\end{equation}
+
+Trong đó:
+
+\begin{itemize}
+    \item $\sigma_{ch}$ -- ứng suất chảy của vật liệu bu lông (MPa) (tham khảo Bảng 17.4, tr. 575);
+    \item [s] -- hệ số an toàn (tham khảo Bảng 17.6, tr. 577).
+\end{itemize}
+
+Với $\sigma_{ch} = 640~MPa$ và chọn [s] = 10 (bu lông M6--M16, thép cácbon, chịu tải thay đổi):
+
+\begin{equation}
+    [\sigma_k] = \frac{640}{10} = 64~MPa.
+\end{equation}
+
+Từ (10):
+
+\begin{equation}
+    d_1 = \sqrt{\frac{4 \times 20000}{\pi \times 64}} \approx 19,95~mm.
+\end{equation}
+
+Tra Bảng 17.7 (tr. 581) các cỡ bu lông thông dụng, đường kính chân ren $d_1 \approx 19,95~mm$ tương ứng với bu lông M20.
+
+\textbf{Kết luận:} Chọn bu lông M20, cấp bền 8.8, bu lông đen bằng thép cácbon để lắp loadcell giữa hai dầm ngang.
+
+\subsection{Tính toán bu lông treo móc}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pictures/chapter3/c3_p04.png}
+    \caption{Tính toán bu lông treo móc}
+    \label{fig:bolt_hook}
+\end{figure}
+Kết cấu sử dụng một bu lông duy nhất để bắt mốc vào dầm ngang, vì vậy bu lông này phải chịu toàn bộ tải thử 20 kN. Để đảm bảo độ bền của chốt bu lông, ta mô hình hóa phần thân bu lông làm việc giống như một trục tròn chịu uốn, do vùng tiếp xúc giữa bu lông và hai chi tiết kẹp có thể coi như một đoạn trục. Cách tiếp cận này xem bu lông như một dầm giản đơn có nhịp L chịu lực tập trung ở giữa $F = 20$ kN, sinh ra ứng suất cắt và ứng suất uốn trong bu lông.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pictures/chapter3/c3_p05.png}
+    \caption{Biểu đồ momen uốn và lực cắt trên bu lông}
+    \label{fig:bolt_hook}
+\end{figure}
+
+Từ điều kiện bền theo uốn (ứng suất tương đương không được vượt quá $[\sigma]$), đường kính tối thiểu của bu lông được xác định theo biểu thức:
+
+\begin{equation}
+    d_{bolt} \geq 10 \cdot \sqrt[3]{\frac{M_b}{0,1 [\sigma]}} \geq 23,21~mm
+\end{equation}
+
+Trong đó $[\sigma]$ là giới hạn chảy nhỏ nhất của thép C45 theo tiêu chuẩn ASTM, $[\sigma] = 360$ MPa. Để thuận tiện cho chế tạo, ta chọn $d_{bolt} = 25~mm$.
+
+\textbf{Kiểm nghiệm bền tĩnh của bu lông}
+
+Vì bu lông không quay nên chỉ cần kiểm tra bền tĩnh.
+
+\begin{equation}
+    W = 0,1 \cdot d^3 = 0,1 \cdot 25^3 = 1562,5~mm^3
+\end{equation}
+
+\begin{equation}
+    W_0 = 0,2 \cdot d^3 = 0,2 \cdot 25^3 = 3125~mm^3
+\end{equation}
+
+Ứng suất tương đương theo thuyết năng lượng biến dạng (von Mises) được tính:
+
+\begin{equation}
+    \sigma_{td} = \sqrt{\sigma^2 + 3\tau^2} \leq [\sigma]
+\end{equation}
+
+Với $[\sigma] = 250~MPa$, $\sigma = \frac{M}{W}$ và $\tau = 0$ (bu lông không chịu xoắn), ta có:
+
+\begin{equation}
+    \sigma_{td} = \frac{337500}{1562,5} = 216~MPa \leq 360~MPa
+\end{equation}
+
+Như vậy, bu lông thỏa điều kiện bền tĩnh và an toàn khi sử dụng.
+
+Mô phỏng kiểm nghiệm trên SolidWorks cho cụm gối đỡ trục và trục được trình bày ở các hình sau.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pictures/chapter3/c3_p06.png}
+    \caption{Kiểm tra ứng xuất trên gá đỡ trục}
+    \label{fig:stress_bracket}
+\end{figure}
+
+\subsection{Thiết kế khung máy}
+
+Khung máy sử dụng nhôm định hình HFSF8-4080 của Misumi Việt Nam làm vật liệu chính.
+
+Lựa chọn nhôm định hình mang lại nhiều ưu điểm thực tế cho thiết kế. Thứ nhất, nhôm định hình có khối lượng nhẹ nhưng vẫn đảm bảo độ bền cao, giúp giảm tổng khối lượng máy mà không làm suy giảm độ cứng, phù hợp với yêu cầu kỹ thuật của hệ thống. Thứ hai, kết cấu rãnh T của nhôm định hình cho phép lắp ráp linh hoạt, dễ dàng điều chỉnh vị trí các chi tiết mà không cần hàn hay gia công phức tạp, qua đó tiết kiệm đáng kể thời gian và chi phí chế tạo. Ngoài ra, lớp ô-xít tự nhiên trên bề mặt nhôm giúp tăng khả năng chống ăn mòn, đảm bảo tuổi thọ khung trong môi trường phòng thí nghiệm và giảm nhu cầu bảo trì.
+
+\section{Kiểm nghiệm độ bền khung máy}
+
+Do tải trọng làm việc của máy tương đối lớn (tới 2 tấn), để đảm bảo an toàn cho người sử dụng và khả năng làm việc lâu dài, cần tiến hành kiểm nghiệm sức bền cho khung máy. Bên cạnh đó, khung sử dụng nhôm định hình làm kết cấu chính và có chiều cao tổng thể khoảng 2000 mm (2 m), là chiều dài tương đối lớn nên có nguy cơ xuất hiện hiện tượng oán (mất ổn định uốn).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pictures/chapter3/c3_p07.png}
+    \caption{Khung nhôm}
+    \label{fig:aluminum_frame}
+\end{figure}
+
+Hiện tượng oán xuất hiện khi thanh chịu nén tới một giá trị tải trọng nhất định làm thay đổi hình dạng ban đầu của thanh. Biến dạng cong này ban đầu có thể nhỏ, nhưng về lâu dài sẽ gây ảnh số và có thể dần tới hư hỏng nghiêm trọng cho máy.
+
+Trước hết, cần xác định cột có được xem là thanh mảnh hay không, vì công thức Euler chỉ áp dụng cho trường hợp thanh bị oán dẻo hỏi (ứng suất trong thanh tại thời điểm oán nhỏ hơn giới hạn chảy của vật liệu). Nếu thanh ngắn (thanh thường xây ra với các thanh dài, mảnh. Với các thanh ngắn hoặc trung bình, hiện tượng oán xảy ra trong vùng dẻo (ứng suất vượt giới hạn tỉ lệ), và khi đó dùng trực tiếp công thức Euler sẽ cho kết quả không an toàn (tải trọng tới hạn tính được cao hơn thực tế).
+
+Tỷ số độ mảnh $\lambda$ là thám số chính dùng để phân loại thanh (ngắn, trung bình hay dài) và quyết định có áp dụng công thức Euler hay không:
+
+\begin{equation}
+    \lambda = \frac{l_z}{r_{min}}
+\end{equation}
+
+Trong đó bán kính quán tính nhỏ nhất $r_{min}$ được xác định bởi:
+
+\begin{equation}
+    r_{min} = \sqrt{\frac{I_{min}}{A}}
+\end{equation}
+
+Với $I_{min}$ và $A$ là mô men quán tính nhỏ nhất và diện tích tiết diện ngang, tra theo catalogue của Misumi.
+
+Từ dữ liệu nhà sản xuất: $r_{min} \approx 0.01336$ m.
+
+\begin{equation}
+    \lambda = \frac{l_z}{r_{min}} = \frac{1}{0.01336} \approx 74.85
+\end{equation}
+
+Tỷ số độ mảnh tới hạn của nhôm 6061 được cho bởi:
+
+\begin{equation}
+    \lambda_c = \pi \cdot \sqrt{\frac{E}{\sigma_y}} = 49.6
+\end{equation}
+
+Trong đó $\sigma_y$ là giới hạn chảy của nhôm 6061. Vì $\lambda > \lambda_c$ nên cột được xem là thanh dài (slender column), do đó việc sử dụng công thức Euler để tính tải trọng tới hạn là phù hợp.
+
+Để tính tải trọng tới hạn của cột, sử dụng công thức Euler:
+
+\begin{equation}
+    P_{cr} = \frac{\pi^2 \cdot E \cdot I}{L_e^2}
+\end{equation}
+
+Trong đó:
+
+\begin{itemize}
+    \item E: mô đun đàn hồi của nhôm 6061, $E = 68~GPa$.
+    \item I: mô men quán tính tiết diện, $I = 19.8 \times 10^{-8}~m^4$.
+    \item $L_e$: chiều dài tính toán của cột. Với hai đầu cột được cố định, ta có $L_e = 0.5 \cdot L = 1$ m.
+\end{itemize}
+
+Từ (21) suy ra tải trọng tới hạn trước khi oán của cột:
+
+\begin{equation}
+    P_{cr} \approx 132884~N
+\end{equation}
+
+Hệ số an toàn đối với mất ổn định được tính:
+
+\begin{equation}
+    FOS = \frac{P_{cr}}{F_{load}} = \frac{132884}{20000} \approx 6.64
+\end{equation}
+
+Giá trị $FOS \approx 6.64 > 1$ khá lớn, cho thấy khả năng oán tổng thể của khung theo tính toán lý thuyết là thấp. Tuy nhiên, để kiểm chứng kết quả và đánh giá phân bố ứng suất, biến dạng trên toàn bộ kết cấu, ta tiến hành mô phỏng phần tử hữu hạn (FEA) trên SolidWorks.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pictures/chapter3/c3_p08.png}
+    \caption{Thử nghiệm ứng suất trên kết cấu}
+    \label{fig:stress_test_frame}
+\end{figure}
+
+Kết quả mô phỏng cho thấy ứng suất von Mises lớn nhất trong khung vào khoảng $1,562 \times 10^8~N/m^2$, vẫn thấp hơn giới hạn chảy của nhôm 6061 nên kết cấu đảm bảo điều kiện bền về ứng suất.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pictures/chapter3/c3_p09.png}
+    \caption{Kiểm nghiệm chuyển vị của kết cấu}
+    \label{fig:displacement_test_frame}
+\end{figure}
+
+Hình dạng biến dạng và tháng màu cho thấy chuyển vị tổng hợp lớn nhất của kết cấu vào khoảng $URES_{max} \approx 5,675 \times 10^{-3}~mm$, xấp xỉ 0,6 mm. Chuyển vị lớn nhất tập trung chủ yếu tại vùng giữa của dầm ngang phía trên -- đây là vị trí chịu lực trực tiếp từ tải trọng dùng, kết quả này hợp lý về mặt cơ học.
+
+Tuy nhiên, quan sát hình dạng biến dạng cũng cho thấy hai cột đứng chính của khung có xu hướng cong ra ngoài, đặc biệt ở vùng giữa chiều cao. Mặc dù giá trị chuyển vị ngang tại đây không phải là nhất toán kết cấu, nhưng dạng cong này phản ánh có xu hướng mất ổn định (oán) cục bộ của cột. Nguyên nhân là do các cột khá mảnh và trọng cẩu hình ban đầu gần như không có giằng ngang ở giữa chiều cao, nên dễ bị mất ổn định khi chịu nén đọc trục.
+
+Giá trị chuyển vị ngang tại cột vào khoảng $0,2 - 0,3$ mm, không quá lớn, nhưng để tăng độ an toàn và độ cứng tổng thể, ta tiến hành gia cường bằng các thanh giằng ngang.
+
+Để tăng độ an toàn và độ cứng tổng thể, ta tiến hành gia cường bằng các thanh giằng ngang. Việc thêm một thanh giằng ngang làm giảm đáng kể độ dài tự do của cột, từ đó hạn chế xu hướng oán và giảm mức độ võng của khung. Ngoài ra, chuyển vị các cột thẳng đứng và giảm một phần áp dịch chuyển của tấm thép trên cùng.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pictures/chapter3/c3_p10.png}
+    \caption{Kiểm nghiệm chuyển vị của kết cấu sau khi thêm một thanh ngang}
+    \label{fig:displacement_after_brace}
+\end{figure}
+
+Sau khi bổ sung một thanh giằng ngang tại vị trí giữa hai cột, chuyển vị của các cột giảm đáng kể, đồng thời chuyển vị tại bản thép phía trên cũng giảm một phần.
+
+Tiếp tục bổ sung thêm một thanh giằng ngang thứ hai tại vị trí tối hạn, kết quả mô phỏng cho thấy chuyển vị lớn nhất trên bản thép phía trên giảm xuống còn khoảng 0,22 mm, trong khi chuyển vị tại cột chỉ khoảng 0,06 mm. Các giá trị này rất nhỏ, đảm bảo rằng biến dạng kết cấu không gây ảnh số đáng kể trong quá trình làm việc.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pictures/chapter3/c3_p11.png}
+    \caption{Kiểm nghiệm chuyển vị của kết cấu sau khi thêm hai thanh ngang}
+    \label{fig:displacement_two_braces}
+\end{figure}
+
+Về mặt lý thuyết, có thể giảm nguy cơ oán bằng cách giảm chiều dài cột. Tuy nhiên, trong bài toán này, việc giảm chiều cao khung để hạn chế hiện tượng oán là không hợp lý, vì sẽ làm giảm hành trình làm việc của máy, gây khó khăn cho vận hành. Đồng thời, yêu cầu máy phải đạt lực tối hạn trong một khoảng thời gian nhất định, và việc giảm chiều cao sẽ buộc tời phải kéo với tốc độ rất nhỏ, làm việc điều khiển trở nên phức tạp hơn.
+
+Do đó, phương án tối ưu được lựa chọn là giữ nguyên chiều cao khung, đồng thời bổ sung các giằng ngang tại vị trí thích hợp để tăng độ cứng và nâng cao hệ số an toàn chống oằn.
