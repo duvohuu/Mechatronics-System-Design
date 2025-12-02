@@ -1,1 +1,374 @@
 \chapter{THIẾT KẾ BỘ ĐIỀU KHIỂN}
+    \textbf{Yêu cầu hệ thống}: Có khả năng tăng lực lên 15 kN trong vòng 240 giây và duy trì lực đó trong 180 giây.
+    \section{Chương trình chính}
+        \hspace*{0.6cm}Trong số các phương án được đề xuất, sơ đồ thuật toán của bộ điều khiển chính đã lựa chọn thể hiện đầy đủ các chức năng cần thiết cho quá trình vận hành của máy. Sơ đồ cung cấp cái nhìn rõ ràng và chi tiết về trình tự làm việc, giúp đảm bảo các bước được tổ chức logic, dễ theo dõi và tuân thủ đúng tiêu chuẩn yêu cầu. Nhờ đó, hệ thống vận hành ổn định, nhất quán và đạt độ chính xác cao.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.43\textwidth]{pictures/chapter5/c5_p1_MainProgram.png}
+            \caption{Sơ đồ chương trình chính}
+            \label{fig:main_program}
+        \end{figure}
+        
+        Chu trình hoạt động của máy thử độ bền tĩnh bắt đầu bằng lệnh hạ cụm nâng chính (cầu trục). Việc hạ diễn ra cho đến khi cảm biến hành trình dưới được kích hoạt, cho biết móc treo đã ở đúng vị trí thấp an toàn để gắn mẫu thử — ma nơ canh 100 kg. Khi cảm biến này báo hiệu, hệ thống lập tức dừng hạ.
+
+        Tiếp theo, hệ thống tiến hành hiệu chỉnh loadcell về mốc zero, sử dụng trọng lượng của ma nơ canh làm giá trị chuẩn ban đầu. Việc hiệu chuẩn này giúp các phép đo lực sau đó chỉ phản ánh lực kéo tác dụng lên dây an toàn, không bao gồm trọng lượng của mẫu thử.
+
+        Khi hiệu chuẩn hoàn tất, máy chuyển sang giai đoạn nâng tải. Tời bắt đầu kéo ma nơ canh lên, tạo lực căng trên dây an toàn. Hệ thống đồng thời kiểm tra giá trị loadcell để xem lực đo được có vượt mức ban đầu (100 kg) hay chưa. Nếu lực vượt ngưỡng này, điều đó chứng tỏ dây an toàn đã bắt đầu chịu lực thử.
+
+        Từ thời điểm đó, bộ điều khiển sử dụng phản hồi từ loadcell và điều khiển động cơ tời thông qua VFD để tăng dần lực kéo, theo đúng yêu cầu tiêu chuẩn, cho đến khi đạt 15 kN. Khi lực mục tiêu đạt được, hệ thống chuyển sang giai đoạn giữ lực, duy trì tải 15 kN trong 3 phút.
+
+        Trong suốt quá trình tăng lực và giữ lực, thuật toán liên tục kiểm tra an toàn, đặc biệt là giám sát cảm biến hành trình trên nhằm tránh vượt quá giới hạn nâng. Nếu cảm biến này được kích hoạt hoặc có điều kiện dừng khác, hệ thống lập tức ngừng hoạt động nâng hoặc giữ lực và có thể thực hiện hạ tải an toàn, đưa cơ cấu về vị trí thấp, thường được xác định lại bằng cảm biến dưới.
+
+        Khi thời gian thử nghiệm kết thúc (sau giai đoạn giữ lực), và trong trường hợp không có sự cố an toàn nào xảy ra trước đó, hệ thống sẽ hạ tải và trở về trạng thái nghỉ, đánh dấu kết thúc chu trình chương trình chính.
+    \section{Chuơng trình con}
+        \subsection{Dừng quá trình hạ và thực hiện lấy 0 cho loadcell}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.23\textwidth]{pictures/chapter5/c5_p2_Sub1.png}
+                \caption{Sơ đồ chương trình con lấy số 0 cho loadcell}
+                \label{fig:tare_loadcell}
+            \end{figure}
+            \hspace*{0.6cm}Chương trình con này mô tả quy trình hiệu chuẩn loadcell nhằm thiết lập mốc zero chính xác trước khi bắt đầu áp dụng tải thử. Trước hết, hệ thống cần đạt trạng thái ổn định để đảm bảo phép đo chính xác, do đó bước đầu tiên là “Dừng tời điện”. Việc này loại bỏ hoàn toàn chuyển động và rung động có thể làm sai lệch giá trị đo của loadcell.
+
+            Khi cơ cấu đã đứng yên, chương trình thực hiện bước “Đọc giá trị loadcell”. Tại thời điểm này, loadcell ghi nhận trọng lượng tĩnh đang treo trên nó, thường là ma nơ canh 100 kg được gắn vào dây an toàn.
+
+            Giá trị trọng lượng ban đầu này được lưu tạm thời làm “Giá trị lấy số 0”. Tiếp theo, hệ thống tiến hành “Hiệu chỉnh offset về zero”, điều chỉnh tín hiệu loadcell hoặc cách hệ thống xử lý tín hiệu để trọng lượng của ma nơ canh được xem là mốc zero cho toàn bộ các phép đo lực tiếp theo. Điều này có nghĩa là trọng lượng ban đầu sẽ được loại bỏ hoàn toàn khi hệ thống tính toán lực thử.
+
+            Sau đó, bước “Cập nhật giá trị lấy số 0” xác nhận rằng hiệu chỉnh đã được ghi nhận vào bộ nhớ, đảm bảo mốc zero mới được áp dụng chính thức. Khi quá trình lấy số 0 và hiệu chỉnh offset hoàn tất, chương trình con kết thúc và hệ thống trở lại chương trình chính, sẵn sàng thực hiện các bước tiếp theo như nâng tải và tăng lực thử với một hệ thống đo lực đã được hiệu chuẩn chính xác.
+        \subsection{Bắt đầu nâng và tăng lực}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.3\textwidth]{pictures/chapter5/c5_p3_Sub2.png}
+                \caption{Sơ đồ chương trình con bắt đầu nâng và tăng lực}
+                \label{fig:start_lifting}
+            \end{figure}
+            \hspace*{0.6cm}Phần này của quá trình điều khiển tập trung vào giai đoạn máy tăng lực kéo tác dụng lên dây an toàn cho đến khi đạt giá trị mục tiêu. Quy trình bắt đầu với lệnh “Bắt đầu nâng”, kích hoạt cơ cấu tời di chuyển lên trên. Ngay sau đó, hệ thống đọc giá trị lực hiện tại từ cảm biến loadcell để lấy dữ liệu đo thực tế.
+
+            Giá trị lực đo được sẽ được so sánh với giá trị đặt (setpoint) hoặc quỹ đạo tăng lực theo yêu cầu trong bộ điều khiển PID. Bộ điều khiển PID tính toán sai lệch (error) giữa lực thực đo và lực cần đạt tại thời điểm đó. Dựa trên sai lệch này, PID xác định mức điều chỉnh cần thiết để đưa lực thực tế tiệm cận giá trị mục tiêu. Việc điều chỉnh này thường được thực hiện thông qua thay đổi tốc độ hoặc mô-men của động cơ tời.
+
+            Tín hiệu điều khiển đã được tính toán bởi PID sau đó được gửi tới tời điện, thông qua biến tần (VFD). Tín hiệu này quyết định cách tời vận hành — tăng tốc, giảm tốc hoặc giữ tốc độ — nhằm đảm bảo lực được tăng theo đúng quỹ đạo đã định.
+
+            Sau khi tời nhận và thực hiện lệnh, hệ thống chuyển sang bước kiểm tra điều kiện: liệu lực hiện tại đã đạt giá trị mục tiêu 1500 kg hay chưa. Nếu lực vẫn chưa đạt, chu trình sẽ được lặp lại: đọc lại lực hiện tại, tính toán lại sai lệch PID, điều chỉnh tốc độ nâng dựa trên đầu ra mới của PID, gửi tín hiệu điều khiển mới đến tời và kiểm tra lại lực.
+
+            Chu trình điều khiển vòng kín này diễn ra liên tục, thực hiện các điều chỉnh nhỏ nhưng chính xác để đảm bảo lực tăng mượt mà và chính xác tới mức 1500 kg. Khi loadcell xác nhận rằng lực đặt đã đạt 1500 kg, điều kiện dừng được thỏa mãn, vòng lặp kết thúc và chương trình thoát khỏi chương trình con này, quay trở lại chương trình chính để tiếp tục bước giữ lực theo yêu cầu thử nghiệm.
+        \subsection{Điều khiển lực}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.5\textwidth]{pictures/chapter5/c5_p4_Sub3.png}
+                \caption{Sơ đồ chương trình con điều khiển lực}
+                \label{fig:force_control}
+            \end{figure}    
+
+            \hspace*{0.6cm}Phần này của thuật toán mô tả cách hệ thống duy trì lực mục tiêu trong suốt giai đoạn giữ tải. Vòng lặp bắt đầu bằng việc “Đọc giá trị loadcell” để lấy lực hiện tại do tời tạo ra. Giá trị đo được sau đó được dùng ngay để so sánh với lực mục tiêu 1500 kg.
+
+            Dựa trên kết quả so sánh, hệ thống đưa ra quyết định tại bước “Lực có nằm trong phạm vi cho phép không?”. Bước này kiểm tra xem lực đo được có lệch khỏi giá trị 1500 kg quá giới hạn sai số cho phép hay không. Nếu lực nằm trong vùng sai số chấp nhận được (nhánh “Yes”), điều đó nghĩa là hệ thống đang giữ lực ổn định, vì vậy thuật toán sẽ giữ nguyên các thông số PID hiện tại mà không cần điều chỉnh.
+
+            Ngược lại, nếu lực đo được nằm ngoài phạm vi cho phép (nhánh “No”), tức là lực đã bị giảm hoặc tăng quá mức so với 1500 kg, hệ thống phải thực hiện hiệu chỉnh. Thuật toán chuyển sang bước “Thay đổi giá trị PID để đạt lực mong muốn”, nghĩa là bộ điều khiển PID sẽ tính toán lại dựa trên sai lệch hiện tại để xác định mức điều chỉnh phù hợp nhằm đưa lực quay trở về giá trị mục tiêu.
+
+            Dù PID được giữ nguyên hay thay đổi, bước tiếp theo luôn là “Cập nhật thông số điều khiển cho tời điện”, gửi giá trị điều khiển mới nhất đến tời thông qua biến tần VFD. Sau khi cập nhật lệnh điều khiển, quá trình quay lại bước đầu tiên — đọc lại giá trị loadcell — và tiếp tục lặp lại toàn bộ chu trình.
+
+            Vòng điều khiển kín này được duy trì liên tục, giúp hệ thống giám sát và hiệu chỉnh lực theo thời gian thực, đảm bảo lực 1500 kg được giữ ổn định và chính xác trong suốt thời gian yêu cầu của bài thử độ bền tĩnh.
+        \subsection{Điều kiện dừng}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.4\textwidth]{pictures/chapter5/c5_p5_Sub4.png}
+                \caption{Sơ đồ chương trình con điều kiện dừng}
+                \label{fig:stop_condition}
+            \end{figure}
+            \hspace*{0.6cm}Phần này của thuật toán điều khiển tập trung vào việc giám sát các điều kiện buộc hệ thống phải dừng động cơ và kết thúc giai đoạn thử hiện tại.
+
+            Trước hết, hệ thống kiểm tra xem lực có nằm ngoài phạm vi cho phép hay không. Nếu lực vượt quá giới hạn sai số, thuật toán lập tức thực hiện lệnh “Dừng động cơ”, chấm dứt hoạt động của tời để đảm bảo an toàn.
+
+            Nếu lực vẫn nằm trong phạm vi cho phép, hệ thống tiếp tục kiểm tra hai điều kiện khác. Điều kiện đầu tiên là thời gian duy trì lực (Timeout) xem đã vượt quá 180 giây hay chưa — đây là thời gian giữ lực 3 phút theo yêu cầu của tiêu chuẩn TCVN. Nếu thời gian đã đạt hoặc vượt mức này, hệ thống ra lệnh “Dừng động cơ”, đánh dấu giai đoạn giữ lực đã hoàn tất thành công.
+
+            Song song hoặc ngay sau đó, hệ thống kiểm tra tín hiệu từ cảm biến hành trình. Đây có thể là cảm biến hành trình trên hoặc một cảm biến an toàn khác. Nếu cảm biến được kích hoạt, thuật toán coi đây là sự kiện an toàn hoặc chạm giới hạn cơ khí và thực hiện “Dừng động cơ” ngay lập tức.
+
+            Như vậy, động cơ sẽ dừng hoạt động nếu xảy ra một trong ba tình huống:
+            \begin{itemize}
+                \item Lực ra khỏi phạm vi cho phép.
+                \item Thời gian giữ lực đã đủ 180 giây
+                \item Cảm biến hành trình/sensor an toàn được kích hoạt.
+            \end{itemize}
+            \hspace*{0.6cm}Sau khi lệnh “Dừng động cơ” được thực thi, hệ thống tiến hành các thao tác kết thúc, bao gồm “Reset thông số PID” để xóa hoặc thiết lập lại các giá trị PID đã dùng trong quá trình điều khiển lực. Cuối cùng, thuật toán kết thúc với bước “Dừng quá trình và quay lại chương trình chính”, báo hiệu rằng giai đoạn giữ lực đã kết thúc và hệ thống trở lại chu trình vận hành tổng thể của máy thử.
+    \section{Bộ điều khiển PID}
+        \subsection{Yêu cầu của tiêu chuẩn TCVN 7802}
+            \hspace*{0.6cm}Theo tiêu chuẩn TCVN-7802-1:2007, lực tăng theo thời gian phải tuân theo biên dạng thể hiện trong sơ đồ dưới đây:
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.75\textwidth]{pictures/chapter5/c5_p6_ForceProfile.png}
+                \caption{Profile Lực}
+                \label{fig:PID_requirement}
+            \end{figure}
+        \subsection{Đặc tính cơ học của dây đai và ảnh hưởng đến điều khiển}
+
+            \hspace*{0.6cm}Trong giai đoạn tăng lực, đặc tính vật liệu của dây đai khiến độ cứng của nó thay đổi khi lực
+            đạt đến một ngưỡng ứng suất nhất định. Sự thay đổi này có thể xảy ra trong cả hai giai đoạn:
+            tăng lực hoặc giữ lực, tùy thuộc vào đặc tính vật liệu của dây đai.
+
+            Do dây đai là vật liệu đàn hồi, nó tuân theo Định luật Hooke và có thể được mô hình hóa như
+            một lò xo có độ cứng thay đổi theo mức độ biến dạng.
+
+            \subsubsection*{Định luật Hooke}
+
+                \hspace*{0.6cm}Định luật Hooke phát biểu rằng trong giới hạn đàn hồi, độ lớn của lực đàn hồi tỉ lệ thuận với
+                độ biến dạng của dây đai:
+
+                \begin{equation}
+                    F_{\mathrm{đh}} = k \cdot |\Delta l|
+                \end{equation}
+
+                Trong đó:
+
+                \begin{itemize}
+                    \item $k$: độ cứng (hệ số đàn hồi) của dây đai,
+                    \item $\Delta l$: độ biến dạng của dây đai.
+                \end{itemize}
+
+            \subsubsection*{Biến dạng đàn hồi}
+
+                \hspace*{0.6cm}Một vật liệu rắn được xem là chịu biến dạng đàn hồi khi nó bị tác dụng bởi một tải nhỏ (kéo
+                hoặc nén) và có thể trở lại trạng thái ban đầu khi tải được loại bỏ. Khi ứng suất và biến dạng
+                nhỏ, quan hệ ứng suất – biến dạng gần như tuyến tính và được mô tả bởi Định luật Hooke, với
+                hằng số tỉ lệ là môđun Young.
+
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.6\textwidth]{pictures/chapter5/c5_p7_StressDiagram.png}
+                    \caption{Biểu đồ ứng suất}
+                    \label{fig:elastic_deformation}
+                \end{figure}
+
+                Môđun Young càng lớn, vật liệu càng cần nhiều ứng suất để tạo ra cùng một mức biến dạng.
+                Một vật hoàn toàn cứng sẽ có môđun Young tiến tới vô hạn, trong khi vật liệu rất mềm (như
+                chất lỏng) có môđun Young xấp xỉ bằng 0.
+
+                Điều này có nghĩa là ở mức ứng suất nhỏ, vật liệu tuân theo quan hệ tuyến tính. Tuy nhiên,
+                khi ứng suất lớn hơn — như trong quá trình thử dây đai — vật liệu sẽ có xu hướng phi tuyến và
+                không còn tuân theo Định luật Hooke một cách chính xác.
+
+            \subsubsection*{Ảnh hưởng đến điều khiển}
+
+                \hspace*{0.6cm}Trong cả hai giai đoạn tăng lực và giữ lực, hiện tượng trượt có thể xảy ra, dẫn đến mất lực tại
+                loadcell. Khi đó, hệ thống phải thực hiện bù lực bằng cách điều chỉnh các tham số PID, đặc biệt
+                khi dây đai tiến gần đến giới hạn đàn hồi của vật liệu. Việc tinh chỉnh PID là rất quan trọng để
+                duy trì lực ổn định và chính xác trong suốt quá trình thử nghiệm.
+        \subsection{Bộ điều khiển PID trong PLC Mitsubishi FX3U}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=1\textwidth]{pictures/chapter5/c5_p8_PIDPLCFunction.png}
+                \caption{Khối PID trong PLC Mitsubishi FX3U}
+                \label{fig:pid_block}
+            \end{figure}
+
+            \hspace*{0.6cm}Hệ thống sử dụng bộ điều khiển PID tích hợp sẵn trên PLC Mitsubishi FX3U. Thuật toán PID
+            được thực hiện theo dạng \textit{gia tăng} (incremental form, hay còn gọi là \textit{velocity form}).
+            Cách tiếp cận này tính toán \textbf{sự thay đổi} của tín hiệu điều khiển $\Delta MV$ tại mỗi chu kỳ quét,
+            thay vì tính giá trị tuyệt đối của tín hiệu điều khiển.
+
+            Cấu trúc này mang lại nhiều ưu điểm như: giảm hiện tượng \textit{windup} của thành phần tích phân,
+            và giúp chuyển đổi giữa các chế độ điều khiển được mượt mà hơn.
+
+            Trong quá trình vận hành, tín hiệu từ loadcell được khuếch đại và đọc trực tiếp bởi module
+            chuyển đổi A/D FX3U--3ADP. Giá trị thu được $PV_n$ được đưa thẳng vào thuật toán PID.
+
+            Bộ điều khiển được cấu hình ở chế độ \textit{backward operation} theo hướng dẫn của FX3U.  
+            Theo tài liệu của Mitsubishi, bộ PID tuân theo công thức:
+
+            \begin{equation}
+            \Delta MV = K_p \left[ (EV_n - EV_{n-1}) + 
+            \frac{T_S}{T_I} EV_n + D_n \right]
+            \end{equation}
+
+            Trong đó:
+
+            \begin{itemize}
+                \item $\Delta MV$: lượng thay đổi của tín hiệu điều khiển,
+                \item $K_p$: hệ số khuếch đại tỉ lệ,
+                \item $EV_n$: sai lệch tại chu kỳ lấy mẫu hiện tại,
+                \item $EV_{n-1}$: sai lệch tại chu kỳ trước,
+                \item $T_S$: chu kỳ lấy mẫu,
+                \item $T_I$: hằng số thời gian tích phân,
+                \item $D_n$: thành phần vi phân.
+            \end{itemize}
+
+            \subsubsection*{Tính toán sai lệch}
+
+                \begin{equation}
+                EV_n = PV_{nf} - SV
+                \end{equation}
+
+                Trong đó:
+
+                \begin{itemize}
+                    \item $PV_{nf}$: giá trị quá trình hiện tại,
+                    \item $SV$: giá trị đặt.
+                \end{itemize}
+
+                \subsubsection*{Tính toán thành phần vi phân}
+
+                \begin{equation}
+                D_n = \frac{T_D}{T_S + K_D T_D}
+                \left( 2PV_{nf-1} - PV_{nf} - PV_{nf-2} \right)
+                + \frac{K_D T_D}{T_S + K_D T_D} D_{n-1}
+                \end{equation}
+
+                Trong đó:
+
+                \begin{itemize}
+                    \item $D_n$: thành phần vi phân tại thời điểm $n$,
+                    \item $D_{n-1}$: thành phần vi phân tại thời điểm $n-1$,
+                    \item $T_D$: hằng số thời gian vi phân,
+                    \item $K_D$: hệ số khuếch đại vi phân,
+                    \item $PV_{nf-1}$: giá trị quá trình ở chu kỳ trước,
+                    \item $PV_{nf-2}$: giá trị quá trình ở hai chu kỳ trước.
+                \end{itemize}
+
+            \subsubsection*{Tín hiệu điều khiển tại thời điểm n}
+
+                \begin{equation}
+                MV_n = \sum \Delta MV
+                \end{equation}
+
+                \subsubsection*{Ghi chú về các tham số quan trọng}
+                \begin{itemize}
+                    \item \textbf{Thời gian tích phân $T_I$}  
+                    Là thời gian cần thiết để thành phần tích phân tích lũy đủ để bù bằng với đầu ra của thành phần tỉ lệ.
+                    Thời gian này cho biết tốc độ mà thành phần tích phân phản ứng với sai lệch.
+
+                    \item \textbf{Hệ số vi phân $K_D$}  
+                    Ảnh hưởng đến độ nhạy của thành phần vi phân:  
+                    \begin{itemize}
+                        \item $K_D$ nhỏ → phản ứng nhanh nhưng nhạy với nhiễu,
+                        \item $K_D$ lớn → phản ứng chậm nhưng lọc nhiễu tốt hơn.
+                    \end{itemize}
+
+                    \item \textbf{Thời gian vi phân $T_D$}  
+                    \begin{itemize}
+                        \item $T_D$ nhỏ → lọc yếu, phản ứng nhanh nhưng dễ khuếch đại dao động nhỏ,
+                        \item $T_D$ lớn → lọc mạnh, chỉ phản ứng với thay đổi lớn và giảm nhiễu tần số cao.
+                    \end{itemize}
+
+                    Nếu tín hiệu nhiễu nhỏ, ta có thể tắt thành phần vi phân bằng cách đặt $T_D = 0$ để đạt phản ứng nhanh.
+                \end{itemize}
+        \subsection{Phương pháp hiệu chỉnh PID bằng Ziegler--Nichols}
+
+            \hspace*{0.6cm}Để hiệu chỉnh các tham số của bộ điều khiển PID, hệ thống áp dụng phương pháp 
+            Ziegler--Nichols, một kỹ thuật được sử dụng rộng rãi trong điều khiển tự động. 
+            Phương pháp này dựa trên việc xác định \textit{hệ số khuếch đại tới hạn} $K_u$ và 
+            \textit{chu kỳ dao động tới hạn} $P_u$ của hệ thống.
+
+            Các thí nghiệm được thực hiện trực tiếp trên hệ thống bằng cách đặt bộ điều khiển ở chế độ 
+            tỉ lệ (P-mode) và tăng dần hệ số $K_p$ cho đến khi hệ thống xuất hiện dao động duy trì. 
+            Các giá trị $K_u$ và $P_u$ thu được cho ba khoảng lực $k$ được trình bày như sau:
+
+            \begin{itemize}
+                \item Với $k < 700$: $K_u = 833.3$, \; $P_u = 0.4 \, \text{s}$
+                \item Với $700 < k < 1000$: $K_u = 1000$, \; $P_u = 0.6 \, \text{s}$
+                \item Với $k > 1000$: $K_u = 1166.77$, \; $P_u = 0.8 \, \text{s}$
+            \end{itemize}
+
+            Việc chia thành ba khoảng lực khác nhau xuất phát từ đặc tính cơ học của dây đai, vốn biến đổi 
+            đáng kể theo mức lực tác dụng. Do đó, các tham số PID tương ứng cũng phải được hiệu chỉnh 
+            khác nhau để đảm bảo hệ thống duy trì được tính ổn định, độ chính xác và khả năng đáp ứng, 
+            phù hợp với yêu cầu của tiêu chuẩn TCVN 7802-1:2007 về thử độ bền tĩnh dây an toàn.
+
+            \subsubsection*{Tính toán tham số PID theo Ziegler--Nichols}
+
+            \hspace*{0.6cm}Dựa vào công thức của Ziegler--Nichols, các tham số PID ban đầu được tính như sau:\\
+
+            \textbf{Với $k < 700$:}
+            \begin{itemize}
+                \item $K_p = 500$
+                \item $T_i = 0.5 \times 0.4 = 0.2 \, \text{s}$
+                \item $T_d = 0.125 \times 0.4 = 0.05 \, \text{s}$
+            \end{itemize}
+
+            \textbf{Với $700 < k < 1000$:}
+            \begin{itemize}
+                \item $K_p = 600$
+                \item $T_i = 0.5 \times 0.6 = 0.3 \, \text{s}$
+                \item $T_d = 0.125 \times 0.6 = 0.075 \, \text{s}$
+            \end{itemize}
+
+            \textbf{Với $k > 1000$:}
+            \begin{itemize}
+                \item $K_p = 700$
+                \item $T_i = 0.5 \times 0.8 = 0.4 \, \text{s}$
+                \item $T_d = 0.125 \times 0.8 = 0.1 \, \text{s}$
+            \end{itemize}
+
+            \subsubsection*{Điều chỉnh tham số PID dựa trên thực nghiệm}
+
+            \hspace*{0.6cm}Trong quá trình vận hành thực tế, các giá trị $T_i$ và $T_d$ tính theo Ziegler--Nichols 
+            không hoàn toàn phù hợp với yêu cầu của hệ thống. Vì vậy, các tham số đã được điều chỉnh 
+            dựa trên dữ liệu thực nghiệm nhằm đạt được hiệu quả điều khiển tối ưu.
+
+            Các tham số PID cuối cùng được sử dụng như sau:
+
+            \begin{itemize}
+                \item Với $k < 700$: \; $K_p = 500$, \; $T_i = 0.1 \, \text{s}$, \; $T_d = 0.2 \, \text{s}$
+                \item Với $700 < k < 1000$: \; $K_p = 600$, \; $T_i = 0.3 \, \text{s}$, \; $T_d = 0.01 \, \text{s}$
+                \item Với $1000 < k < 1200$: \; $K_p = 700$, \; $T_i = 0.4 \, \text{s}$, \; $T_d = 0.01 \, \text{s}$
+            \end{itemize}
+    \section{Thiết kế HMI}
+        \subsection{Giao diện chính}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=1\textwidth]{pictures/chapter5/c5_p9_MainOperational.png}
+                \caption{Giao diện vận hành chính}
+                \label{fig:main_interface}
+            \end{figure}
+
+            \hspace*{0.6cm}Hình~\ref{fig:main_interface} trình bày giao diện vận hành chính của màn hình HMI. 
+            Ở phía bên trái, giao diện hiển thị hai thông số quan trọng: 
+            \begin{itemize}
+                \item \textbf{Giá trị lực hiện tại}: được đo bởi loadcell và cập nhật theo thời gian thực.
+                \item \textbf{Tần số lấy mẫu}: biểu thị tốc độ cập nhật dữ liệu của hệ thống.
+            \end{itemize}
+
+            Bảng điều khiển bên phải cho thấy trạng thái của các cảm biến liên quan và bao gồm cả \textbf{nút dừng khẩn cấp (Emergency Stop)} nhằm đảm bảo an toàn trong quá trình vận hành.
+
+            Các nút \textbf{``Up''} và \textbf{``Down''} được dùng để điều khiển thủ công tời nâng, phục vụ cho giai đoạn chuẩn bị như định vị ma nơ canh và căn chỉnh dây an toàn trước khi thử nghiệm.
+
+            Nút \textbf{``Get Tare''} khởi động quy trình đặt giá trị zero cho loadcell, đây là bước bắt buộc cần thực hiện trước khi tiến hành thử. 
+
+            Nút \textbf{``Test''} bắt đầu toàn bộ chu trình thử nghiệm tự động theo thuật toán điều khiển đã lập trình.
+
+            Cuối cùng, nút \textbf{``PID Setting''} cho phép chuyển đến giao diện điều chỉnh các tham số của bộ điều khiển PID, giúp tối ưu hiệu suất điều khiển lực trong quá trình thử.
+        \subsection{Giao diện thử nghiệm}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=1\textwidth]{pictures/chapter5/c5_p10_Test.png}
+                \caption{Giao diện thử nghiệm}
+                \label{fig:test_interface}
+            \end{figure}
+            \hspace*{0.6cm}Hình~\ref{fig:test_interface} minh họa giao diện thử nghiệm của hệ thống. Ở khu vực bên trái,
+            các tham số quan trọng được hiển thị theo thời gian thực trong suốt quá trình thử, bao gồm:
+
+            \begin{itemize}
+                \item \textbf{Giá trị lực đặt} (setpoint), ví dụ: $15~\mathrm{kN}$,
+                \item \textbf{Lực thực tế} đo được từ cảm biến loadcell,
+                \item \textbf{Thời gian đã trôi qua} kể từ khi bắt đầu thử nghiệm,
+                \item \textbf{Tần số lấy mẫu} hiện tại.
+            \end{itemize}
+
+            Khi chu trình thử nghiệm được kích hoạt từ màn hình chính, PLC sẽ thực thi toàn bộ thuật toán
+            điều khiển. Kết quả lực đo được sẽ được cập nhật liên tục và biểu diễn dưới dạng đồ thị trong vùng
+            hiển thị nằm bên phải giao diện, cho phép người vận hành theo dõi trực quan sự thay đổi của lực
+            trong suốt quá trình thử nghiệm.
+        \subsection{Giao diện hiệu chỉnh PID}
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=1\textwidth]{pictures/chapter5/c5_p11_PIDSetting.png}
+                \caption{Giao diện hiệu chỉnh tham số PID}
+                \label{fig:pid_interface}
+            \end{figure}
+
+            \hspace*{0.6cm}Giao diện này được chia thành hai phần chính.  
+            Phần \textit{PID Setting} cho phép người dùng điều chỉnh các tham số của bộ điều khiển PID.  
+            Phần bên phải cung cấp các điều khiển để cài đặt tham số xử lý tín hiệu loadcell, 
+            bao gồm hệ số khuếch đại (gain) và giá trị bù (offset) được sử dụng trong quá trình hiệu chuẩn.
+
+
+            
