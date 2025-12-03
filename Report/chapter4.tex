@@ -1,1 +1,147 @@
 \chapter{THIẾT KẾ HỆ THỐNG ĐIỆN}
+     \hspace*{0.6cm}Yêu cầu thiết kế hệ thống điện dựa trên TCVN-7802-1:2007
+     \begin{itemize}
+          \item Dải hoạt động của thiết bị đo lường lực: 1.2 kN đến 20 kN
+          \item Độ chính xác của thiết bị đo lường lực: $\pm 2 \%$
+     \end{itemize}
+     \hspace*{0.6cm}Từ việc lựa chọn các phương án điện tổng quát, sơ đồ kết nối điện tổng thể của máy được thể hiện như hình dưới. Sơ đồ thể hiện cách các thiết bị kết nối với nhau, từ nguồn cấp điện đến tủ điều khiển, cảm biến, động cơ. Các model cụ thể cho từng thiết bị cũng như việc tính toán an toàn điện, lựa chọn các thiết bị bảo vệ sẽ được trình bày chi tiết trong chương này.
+     \begin{figure}[H]
+          \centering
+          \includegraphics[width=0.8\textwidth]{pictures/chapter4/c4_p01.png}
+          \caption{Sơ đồ điện tổng quan của hệ thống}
+          \label{c4_p01}
+     \end{figure}
+     % Nội dung
+     \section{Lựa chọn thiết bị}
+          \subsection{Bộ điều khiển PLC và module mở rộng}
+               \hspace*{0.6cm}Bộ điều khiển logic khả trình - Programmable Logic Controller (PLC) là trung tâm của hệ thống điều khiển. chịu trách nhiệm xử lý dữ liệu đầu vào, thực thi logic điều khiển và quản lý dữ liệu đầu ra để đảm bảo máy hoạt động chính xác. Để lựa chọn PLC phù hợp, cần xem xét đến các yêu cầu về hiệu suất và khả năng giao tiếp như sau
+               \begin{itemize}
+                    \item Nguồn cấp: Tương thích với nguồn điện tiêu chuẩn công nghiệp (220 VAC cho nguồn chính, sử dụng bộ chuyển đổi nội hoặc nguồn ngoài cấp 24V DC cho mạch logic).
+                    \item I/O: PLC cần có đủ các chân ngõ vào kĩ thuật số (DI) và ngõ ra kĩ thuật số (DO) để kết nối với toàn bộ cảm biến, công tắc và phát tín hiệu điều khiển. Yêu cầu tối thiểu đối với hệ thống: 7 ngõ vào (2 cảm biến tiệm cận, nút nhấn dừng khẩn cấp, tín hiệu từ HMI) và 3 ngõ ra (cho lệnh chạy VFD, điều khiển chiều quay và tốc độ gửi xuống VFD).
+                    \item Chức năng đặc biệt: Hỗ trợ bộ đếm tốc độ cao (High-speed Counter) và ngõ ra xung (Pulse Output).
+                    \item Truyền thông: Có ít nhất 1 chuẩn giao thức truyền thông (RS232, RS485, RS422, Ethernet) để kết nối với HMI.
+                    \item Ngõ vào analog: PLC có khả năng đọc tín hiệu analog, thông qua các ngõ vào có sẵn hoặc module mở rộng nhằm đọc tín hiệu từ bộ khuếch đại tín hiệu loadcell.
+                    \item Khả năng xử lí: Cần khả năng xử lí số thực (floating-point) nhằm cho việc tính toán bộ điều khiển PID và các tác vụ xử lí dữ liệu khác.
+                    \item Độ tin cậy và giá thành: Độ bền cao trong môi trường công nghiệp, khả năng chống nhiễu tốt và chi phí hợp lí.
+               \end{itemize}
+               \hspace*{0.6cm}Dựa trên quá trình lựa chọn và đánh giá thỏa mãn các yêu cầu phía trên, PLC MItsubishi FX3U-16MT/ES-A được lựa chọn. Dòng FX3U được đánh giá cao nhờ độ tin cậy, khả năng xử lí và mở rộng trong các hệ thống tự động hóa công nghiệp. Kí hiệu "16MT" trên tên PLC thể hiện PLC có 8 ngõ vào số và 8 ngõ ra transistor, đáp ứng đủ như cầu về các chân I/O. PLC này cũng hỗ trợ xử lí số thực và có sẵn cổng truyền thông RS422 để kết nối với màn hình HMI.
+               \newline
+               \hspace*{0.6cm}Tuy nhiên dòng FX3U không tích hợp sẵn đầu vào analog, do đó để nhận tín hiệu đầu ra từ bộ khuếch đại tín hiệu loadcell (0 - 10V). Do đó cần thiết phải sử dụng thêm 1 bộ ADC (Analog-to-Digital Converter) mở rộng. Mitsubishi FX3U-3A-ADP được lựa chọn vì nó được thiết kế chuyên dụng để sử dụng với dòng FX3U, cung cấp các kênh ngõ vào analog cần thiết để chuyển đổi tín hiệu analog thành tín hiệu số phục vụ cho việc tính toán trong chương trình điều khiển của PLC.
+               \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=0.5\textwidth]{pictures/chapter4/c4_p02.png}
+                    \label{c4_p02}
+               \end{figure}
+               \subsection{Cảm biến loadcell và bộ khuếch đại}
+               \hspace*{0.6cm}Độ chính xác khi đo lường lực trong quá trình hoạt động của máy thử thiết bị rất quan trọng, do đó cần 1 cảm biến loadcell đáng tin cậy để chuyển đổi tín hiệu điện thành tín hiệu điện áp, cùng với một bộ khuếch đại tín hiệu để khuếch đại tín hiệu nhằm tương thích với dải đọc analog trên PLC. Các tiêu chí để lựa chọn như sau
+               \begin{itemize}
+                    \item Tương thích với nguồn cấp: hoạt động với nguồn cấp điện áp 24VDC
+                    \item Dải đo: Chịu được lực kéo tĩnh khoảng 15 kN, đồng thời chịu được tải tối đa thiết bị test yêu cầu lên đến 20 kN, tương đương với tải trọng khoảng 2000 kb ($\approx 20 \mathrm{kN}$)
+                    \item Độ chính xác: Hệ cảm biến cần có độ chính xác $< \pm 2 \%$
+                    \item Tín hiệu ngõ ra: Bộ khuếch đại tín hiệu loadcell cần cung cấp đầu ra là tín hiệu analog chuẩn hóa (0-10 V hoặc 4-20 mA).
+               \end{itemize}
+               \hspace*{0.6cm}Với những yêu cầu trên, cộng với quyết định sử dụng loadcell loại S ở chương 2 vì phù hợp với thử nghiệm kéo (tensile testing) và dễ dàng lắp đặt, loadcell PT4000 được lựa chọn sử dụng. Loại có định mức từ 2000 kg trở lên đáp ứng được dải tải yêu cầu, đảm bảo độ tin cậy và độ chính xác phù hợp.
+               \newline
+               \hspace*{0.6cm}Để khuếch đại tín hiệu từ loadcell, lựa chọn bộ khuếch đại KM02. Bộ khuếch đại này hoạt động trong dải điện áp 15-24 VDC. KM02 cung cấp tín hiệu đầu ra có thể cấu hình (0-10 V hoặc 4-20 mA) tương thích với module analog của PLC. Ngoài ra nó còn được tích hợp sẵn các chiết áp để điều chỉnh đầu ra ở các mức ZERO và SPAN, giúp quá trình hiệu chỉnh trở nên đơn giản, chính xác và thuận tiện.
+               % figure
+          \subsection{Cảm biến tiệm cận}
+               \hspace*{0.6cm}Để ngăn ngừa hư hỏng cơ khí và đảm bảo vận hành an toàn, máy phải phát hiện được giới hạn trên và giới hạn dưới của cơ cấu tời (winch mechanism) hoặc các bộ phận chuyển động khác. Cảm biến tiệm cận điện cảm (inductive proximity sensor) là lựa chọn lý tưởng để phát hiện các mục tiêu kim loại mà không cần tiếp xúc vật lý. Các tiêu chí lựa chọn cảm biến này bao gồm:
+               \begin{itemize}
+                    \item Nguồn: Hoạt động ở 24 V DC, tiêu chuẩn cho các hệ thống điều khiển công nghiệp.
+                    \item Loại đầu ra: Cấu hình PNP 3 dây, phù hợp để kết nối với các module đầu vào sourcing của PLC Mitsubishi.
+                    \item Khoảng cách cảm biến: Khoảng 5–10 mm để đảm bảo hoạt động tin cậy mà không yêu cầu định vị quá chính xác.
+                    \item Mục tiêu phát hiện: Phải phát hiện đáng tin cậy các vật thể kim loại.
+                    \item Cách lắp đặt: Thân trụ ren (loại gắn bằng đai ốc) để dễ dàng lắp đặt cơ khí.
+                    \item Độ bền và tính sẵn có: Chịu được môi trường công nghiệp khắc nghiệt, sử dụng thường xuyên và dễ thay thế.
+               \end{itemize}
+               \hspace*{0.6cm}Dựa trên các tiêu chí trên, cảm biến tiệm cận điện cảm model LJ18A3-8-Z/BY PNP đã được lựa chọn. Model này có thân ren M18 tiện lợi cho việc lắp đặt, hoạt động với nguồn 24 V DC, đầu ra loại PNP (lưu ý: có thể kết nối tương thích với đầu vào sourcing của PLC bằng cách đấu nối phù hợp). Khoảng cách cảm biến 8 mm nằm trong dải mong muốn để phát hiện các chốt chặn kim loại. Cảm biến này có giá thành hợp lý, được sử dụng rộng rãi và chứng minh độ tin cậy cao trong môi trường công nghiệp.
+          \subsection{Biến tần}
+               \hspace*{0.6cm}Máy thử nghiệm sử dụng tời điện được dẫn động bởi động cơ điện AC nhằm tạo ra và duy trì lực kéo. Do yêu cầu của bài thử nghiệm cần tăng lực từ từ (trong vòng 240s) và duy trì (trong vòng 180s), phương pháp điều khiển ON/OFF đơn giản không thể đáp ứng. Vì vậy, việc sử dụng biến tần (VFD: Variable Frequency Drive) là cần thiết do mục đích điều khiển chính xác tốc độ, moment, xoắn, việc gia tốc, giảm tốc và chiều quay của động cơ dựa trên giá trị setpoint từ bộ điều khiển PID.
+               \newline
+               \hspace*{0.6cm}Các yêu cầu kĩ thuật:
+               \begin{itemize}
+                    \item Tương thích với nguồn: Biến tần hỗ trợ nguồn 1 pha 220 VAC.
+                    \item Công suất định mức: phải đủ khả năng dẫn động động cơ điện công suất 1.4 kW cho tời kéo. 
+                    \item Khả năng tích hợp với PLC: Hỗ trợ giao tiếp số (ưu tiên giao thức Modbus) để giao tiếp lệnh điều khiển và dữ liệu phản hồi giữa PLC và biến tần.                 
+               \end{itemize}                
+               \hspace*{0.6cm}Mẫu biến tần được lựa chọn là FR150A-2S-1.5B-H của hãng Frecon Electric, đáp ứng được tất cả các yêu cầu trên. Biến tần này có công suất định mức 1.5 kW, hoạt động với nguồn vào 220 V một pha, đủ để dẫn động động cơ tời 1.4 kW.
+               Đặc biệt quan trọng, model này hỗ trợ giao thức Modbus RTU qua RS485, cho phép PLC Mitsubishi FX3U gửi các lệnh điều khiển (như chạy/dừng, đặt tần số, đặt hướng quay...) và nhận dữ liệu phản hồi (tốc độ động cơ thực tế, dòng điện, trạng thái lỗi, v.v.).
+               Nhờ đó, hệ thống đạt được khả năng điều khiển lực tời chính xác, lập trình linh hoạt và vận hành ổn định, đáng tin cậy.
+          \subsection{HMI}
+               \hspace*{0.6cm}Giao diện người-máy HMI (Human-Machine Interface) cho phép người vận hành thực hiện các thao tác với hệ thống như khởi động/dừng quá trình thử nghiệm, cài đặt các thông số bộ điều khiển (hệ số PID, các hệ số hiệu chỉnh, \dots), theo dõi dữ liệu thời gian thực (giá trị lực, thời gian, trạng thái cảm biến), hiển thị đồ thị kết quả thử nghiệm (đồ thị lực theo thời gian). Các tiêu chí để lựa chọn HMI bao gồm:
+               \begin{itemize}
+                    \item Giao tiếp với PLC: Đảm bảo kết nối được với PLC Mitsubishi FX3U-16MT/ES-A.
+                    \item Màn hình hiển thị: Kích thước và độ phân giải đủ lớn, hỗ trợ cảm ứng để dễ dàng thao tác.
+                    \item Phần mềm: Dễ dàng sử dụng trong việc thiết kế giao diện và gửi nhận dữ liệu với PLC. 
+               \end{itemize}
+               Từ các tiêu chí đó, lựa chọn HMI Weintek MT607iH. HMI có màn hình 7 inch, độ phân giải của màn hình là $800 \times 400$. Hỗ trợ kết nối với PLCs qua giao thức RS232 và RS485. Cấu hình HMI thực hiện thông qua phần mềm EasyBuilder Pro (hoặc EasyBuilder 8000) giúp thiết kế giao diện HMI dễ dàng.
+     \section{Tính toán nguồn và an toàn thiết bị điện}
+          \subsection{Nguồn động lực}
+          \hspace*{0.6cm}Từ sơ đồ khối điện tổng quát, các nguồn chính là: nguồn xoay chiều 1 pha 220 VAC cho tời điện và biến tần, nguồn 1 chiều 24 VDC cho các thiết bị còn lại.
+          \subsection{Tính toán dây dẫn}
+          \hspace*{0.6cm}Dựa trên các thiết bị dã chọn, tiến hành tính toán dòng điện, lựa chọn dây dẫn, các thiết bị bảo vệ. Bảng dưới đây liệt kê các thiết bị điện trong hệ thống, số lượng và công suất tiêu thụ điện
+          \begin{table}[h!]
+               \caption{Danh sách thiết bị}
+               \label{tab:device_list}
+               \centering
+               \begin{tabular}{|c|l|c|c|c|}
+               \hline
+               \textbf{} & \centering\textbf{Tên thiết bị} & \textbf{Số lượng} & \textbf{Nguồn} & \textbf{Công suất tiêu thụ} \\ \hline
+
+               1 & PLC FX3U-16MT/ES-A & 1 & \multirow{5}{*}{24V DC} & 30\,W \\ \cline{1-3}\cline{5-5}
+
+               2 & Module FX3U–3A–ADP & 1 &  & 5\,W \\ \cline{1-3}\cline{5-5}
+
+               3 & Weintek HMI model MT607iH & 1 &  & 6\,W \\ \cline{1-3}\cline{5-5}
+
+               4 & Bộ khuếch đại BRT RW-ST01A & 1 &  & 1.5\,W \\ \cline{1-3}\cline{5-5}
+
+               5 & Cảm biến tiệm cận LJ18A3-8-Z/BX NPN & 1 &  & 7.2\,W \\ \hline
+
+               6 & Tời điện 3WG4 Atlas II 
+               & 1 & \multirow{2}{*}{220V AC} & 1.4\,kW \\ \cline{1-1}\cline{2-3}\cline{5-5}
+
+               7 & Biến tần FR150A-2S-1.5B-H & 1 &  & 1.5\,kW \\ \hline
+               \end{tabular}
+          \end{table}
+          \hspace*{0.6cm}Dòng trong mạch điều khiển
+          \begin{equation}
+               I_{\text{control}} = \dfrac{P}{U} = \dfrac{30 + 5 + 6 + 1.5 + 7.2}{24} \approx 2.07 \,\mathrm{A}
+               \label{c4_eq01}
+          \end{equation}
+          \hspace*{0.6cm}Đối với mạch điều khiển, sử dụng bộ chuyển đổi nguồn 24V 3A 72W.
+          \newline
+          \hspace*{0.6cm}Tính toán dòng cho CB trong mạch điều khiển
+          \begin{equation}
+               I_{\text{control\_CB}} = (1.2 \div 1.5)I_{\text{control}} = 2.07 \times 1.5 \approx 3.105 \,\mathrm{A}
+               \label{c4_eq02}
+          \end{equation}
+          \hspace*{0.6cm}Với dòng như vậy, lựa chọn MCB Chint NXB-63 C6 2P làm CB cho mạch điều khiển.
+          \newline
+          \hspace*{0.6cm}Đối với mạch động lực, dòng đầu vào định mức của biến tần Frecon FR150A-2S-1.5B-H là 15.7 A, tiến hành tính toán dòng cho CB mạch động lực 
+          \begin{equation}
+               I_{\text{power\_CB}}  = (2 \div 3)I_{\text{power}} = 15.7 \times 3 = 47.1 \,\mathrm{A}
+               \label{c4_eq03}
+          \end{equation}
+          \hspace*{0.6cm}Với dòng tính toán, lựa chọn MCB 2P 50A, 63A 6kA Panasonic làm CB cho mạch động lực.
+          \newline
+          \hspace*{0.6cm}Về dây dẫn đấu nối trong mạch, tra theo Catalogue của Cadivi, các loại dây sử dụng được liệt kê ở bảng sau
+          \begin{table}[H]
+               \caption{Danh sách các loại dây sử dụng}
+               \label{tab:wire_list}
+               \centering
+               \begin{tabular}{|l|c|}
+               \hline
+               \textbf{Chức năng dây} & \textbf{Loại dây} \\ \hline
+
+               Dây cho 220VAC (Dây nóng – L) & VCm-2.5 \\ \hline
+               Dây cho 220VAC (Dây trung tính – N) & VCm-2.5 \\ \hline
+               Dây nối đất (PE) & VCm-1 \\ \hline
+               Dây 24VDC (Dương) & VCm-1 \\ \hline
+               Dây 24VDC (Âm) & VCm-1 \\ \hline
+               Dây trong mạch điều khiển & VCm-1 \\ \hline
+               \end{tabular}
+          \end{table}
+
+
+
