@@ -35,22 +35,22 @@
             Giá trị trọng lượng ban đầu này được lưu tạm thời làm “Giá trị lấy số 0”. Tiếp theo, hệ thống tiến hành “Hiệu chỉnh offset về zero”, điều chỉnh tín hiệu loadcell hoặc cách hệ thống xử lý tín hiệu để trọng lượng của ma nơ canh được xem là mốc zero cho toàn bộ các phép đo lực tiếp theo. Điều này có nghĩa là trọng lượng ban đầu sẽ được loại bỏ hoàn toàn khi hệ thống tính toán lực thử.
 
             Sau đó, bước “Cập nhật giá trị lấy số 0” xác nhận rằng hiệu chỉnh đã được ghi nhận vào bộ nhớ, đảm bảo mốc zero mới được áp dụng chính thức. Khi quá trình lấy số 0 và hiệu chỉnh offset hoàn tất, chương trình con kết thúc và hệ thống trở lại chương trình chính, sẵn sàng thực hiện các bước tiếp theo như nâng tải và tăng lực thử với một hệ thống đo lực đã được hiệu chuẩn chính xác.
-        \subsection{Bắt đầu nâng và tăng lực}
-            \begin{figure}[H]
-                \centering
-                \includegraphics[width=0.3\textwidth]{pictures/chapter5/c5_p3_Sub2.png}
-                \caption{Sơ đồ chương trình con bắt đầu nâng và tăng lực}
-                \label{fig:start_lifting}
-            \end{figure}
-            \hspace*{0.6cm}Phần này của quá trình điều khiển tập trung vào giai đoạn máy tăng lực kéo tác dụng lên dây an toàn cho đến khi đạt giá trị mục tiêu. Quy trình bắt đầu với lệnh “Bắt đầu nâng”, kích hoạt cơ cấu tời di chuyển lên trên. Ngay sau đó, hệ thống đọc giá trị lực hiện tại từ cảm biến loadcell để lấy dữ liệu đo thực tế.
+        % \subsection{Bắt đầu nâng và tăng lực}
+        %     \begin{figure}[H]
+        %         \centering
+        %         \includegraphics[width=0.3\textwidth]{pictures/chapter5/c5_p3_Sub2.png}
+        %         \caption{Sơ đồ chương trình con bắt đầu nâng và tăng lực}
+        %         \label{fig:start_lifting}
+        %     \end{figure}
+        %     \hspace*{0.6cm}Phần này của quá trình điều khiển tập trung vào giai đoạn máy tăng lực kéo tác dụng lên dây an toàn cho đến khi đạt giá trị mục tiêu. Quy trình bắt đầu với lệnh “Bắt đầu nâng”, kích hoạt cơ cấu tời di chuyển lên trên. Ngay sau đó, hệ thống đọc giá trị lực hiện tại từ cảm biến loadcell để lấy dữ liệu đo thực tế.
 
-            Giá trị lực đo được sẽ được so sánh với giá trị đặt (setpoint) hoặc quỹ đạo tăng lực theo yêu cầu trong bộ điều khiển PID. Bộ điều khiển PID tính toán sai lệch (error) giữa lực thực đo và lực cần đạt tại thời điểm đó. Dựa trên sai lệch này, PID xác định mức điều chỉnh cần thiết để đưa lực thực tế tiệm cận giá trị mục tiêu. Việc điều chỉnh này thường được thực hiện thông qua thay đổi tốc độ hoặc mô-men của động cơ tời.
+        %     Giá trị lực đo được sẽ được so sánh với giá trị đặt (setpoint) hoặc quỹ đạo tăng lực theo yêu cầu trong bộ điều khiển PID. Bộ điều khiển PID tính toán sai lệch (error) giữa lực thực đo và lực cần đạt tại thời điểm đó. Dựa trên sai lệch này, PID xác định mức điều chỉnh cần thiết để đưa lực thực tế tiệm cận giá trị mục tiêu. Việc điều chỉnh này thường được thực hiện thông qua thay đổi tốc độ hoặc mô-men của động cơ tời.
 
-            Tín hiệu điều khiển đã được tính toán bởi PID sau đó được gửi tới tời điện, thông qua biến tần (VFD). Tín hiệu này quyết định cách tời vận hành — tăng tốc, giảm tốc hoặc giữ tốc độ — nhằm đảm bảo lực được tăng theo đúng quỹ đạo đã định.
+        %     Tín hiệu điều khiển đã được tính toán bởi PID sau đó được gửi tới tời điện, thông qua biến tần (VFD). Tín hiệu này quyết định cách tời vận hành — tăng tốc, giảm tốc hoặc giữ tốc độ — nhằm đảm bảo lực được tăng theo đúng quỹ đạo đã định.
 
-            Sau khi tời nhận và thực hiện lệnh, hệ thống chuyển sang bước kiểm tra điều kiện: liệu lực hiện tại đã đạt giá trị mục tiêu 1500 kg hay chưa. Nếu lực vẫn chưa đạt, chu trình sẽ được lặp lại: đọc lại lực hiện tại, tính toán lại sai lệch PID, điều chỉnh tốc độ nâng dựa trên đầu ra mới của PID, gửi tín hiệu điều khiển mới đến tời và kiểm tra lại lực.
+        %     Sau khi tời nhận và thực hiện lệnh, hệ thống chuyển sang bước kiểm tra điều kiện: liệu lực hiện tại đã đạt giá trị mục tiêu 1500 kg hay chưa. Nếu lực vẫn chưa đạt, chu trình sẽ được lặp lại: đọc lại lực hiện tại, tính toán lại sai lệch PID, điều chỉnh tốc độ nâng dựa trên đầu ra mới của PID, gửi tín hiệu điều khiển mới đến tời và kiểm tra lại lực.
 
-            Chu trình điều khiển vòng kín này diễn ra liên tục, thực hiện các điều chỉnh nhỏ nhưng chính xác để đảm bảo lực tăng mượt mà và chính xác tới mức 1500 kg. Khi loadcell xác nhận rằng lực đặt đã đạt 1500 kg, điều kiện dừng được thỏa mãn, vòng lặp kết thúc và chương trình thoát khỏi chương trình con này, quay trở lại chương trình chính để tiếp tục bước giữ lực theo yêu cầu thử nghiệm.
+        %     Chu trình điều khiển vòng kín này diễn ra liên tục, thực hiện các điều chỉnh nhỏ nhưng chính xác để đảm bảo lực tăng mượt mà và chính xác tới mức 1500 kg. Khi loadcell xác nhận rằng lực đặt đã đạt 1500 kg, điều kiện dừng được thỏa mãn, vòng lặp kết thúc và chương trình thoát khỏi chương trình con này, quay trở lại chương trình chính để tiếp tục bước giữ lực theo yêu cầu thử nghiệm.
         \subsection{Điều khiển lực}
             \begin{figure}[H]
                 \centering
